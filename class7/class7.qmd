@@ -1,0 +1,131 @@
+---
+title: "class7 lab (Hands on with Principal Component Analysis (PCA))"
+author: "Josef Urrete"
+format: pdf
+---
+
+# 1. PCA of UK Food data
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url)
+
+```
+
+## Q1. How mnay rows and columns are in dataframe x? What R functions could you use to answer these questions?
+
+```{r}
+#use nrows and ncol or dim()
+dim(x)
+```
+
+```{r}
+#to preview x
+##View(x)
+```
+
+```{r}
+#how minus indexing works
+rownames(x) <- x[,1]
+x <- x[,-1]
+head(x)
+```
+
+```{r}
+x <- read.csv(url, row.names = 1)
+head(x)
+```
+
+## Q2: Which approach to solving the "row-names problem' mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+
+Making basic visualizations
+
+```{r}
+cols <- rainbow(nrow(x))
+barplot(as.matrix(x), col=cols)
+```
+
+## Q3: Chainging optional argument in barplot
+
+```{r}
+barplot(as.matrix(x), col=cols, beside = T)
+```
+
+```{r}
+pairs(x, col =rainbow(nrow(x)), pch = 16)
+```
+
+Applying PCA
+
+```{r}
+pca <- prcomp(t(x))
+attributes(pca)
+```
+
+## Q7: complete the code below to generate a plot of PC1 vs PC2. Second line adds text labels over the data points.
+
+using pca\$x
+
+```{r}
+plot(pca$x[,1], pca$x[,2])
+text(pca$x[,1], pca$x[,2], colnames(x))
+```
+
+## Q8: Customize plot so colors of country names match colors in original map and table
+
+```{r}
+country_cols <- c("orange", "red", "blue", "green")
+plot(pca$x[,1],pca$x[,2])
+text(pca$x[,1], pca$x[,2], colnames(x), col=country_cols)
+```
+
+PC1
+
+```{r}
+par(mar=c(10,3,0.35,0))
+barplot(pca$rotation[,1], las=2)
+```
+
+## Q9: Generate similar loadings plot for PC2. What two food groups feature prominantly and what does PC2 mainly tell us about?
+
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot(pca$rotation [,2], las=2)
+
+```
+
+```{r}
+biplot(pca)
+```
+
+```{r}
+url2 <- "https://tinyurl.com/expression-CSV"
+rna.data <- read.csv(url2, row.names=1)
+head(rna.data)
+```
+
+## Q10: how many genes and samples are in this ddata set?
+
+```{r}
+dim(rna.data)
+```
+
+100 genes and 10 samples
+
+```{r}
+pca <- prcomp(t(rna.data))
+summary(pca)
+```
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab = "PC1", ylab ="PC2")
+```
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2")
+text(pca$x[,1], pca$x[,2], colnames(rna.data))
+```
+
+```{r}
+sort(pca$rotation[,1])
+```
